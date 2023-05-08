@@ -1,0 +1,13 @@
+{
+    "resources": [
+        {
+            "id": "111",
+            "region": "us-west-2",
+            "cluster": "my-cluster2",
+            "name": "my-service-1",
+            "alb": "my-alb",
+            "dns": "my-dns",
+            "destroy": true
+        }
+    ]
+}
