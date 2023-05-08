@@ -1,35 +1,36 @@
 import json
 from typing import Optional
 
+filename = 'queue.json'
+
 class ServiceNotFound(Exception):
     pass
 
 def get_resource_data(resource_id: str) -> Optional[dict]:
     """Obtém os dados de um recurso com um determinado ID"""
-    with open("resources.json", "r") as f:
+     
+    with open(filename,  "r") as f:
         data = json.load(f)
     for resource in data["resources"]:
         if resource["id"] == resource_id:
             return resource
     raise ServiceNotFound(f"Recurso com ID {resource_id} não encontrado")
 
-
 def check_resource(resource_id: str) -> Optional[dict]:
     """Verifica se um recurso existe ou não"""
     print(f"Verificando recurso com ID {resource_id}")
     try:
         resource_data = get_resource_data(resource_id)
-        print(f"Recurso encontrado com ID {resource_data['id']}, região {resource_data['region']}, cluster {resource_data['cluster']}, nome {resource_data['name']}, alb {resource_data['alb']}, dns {resource_data['dns']}")
+        print(f"Recurso encontrado com ID {resource_data['id']}")
         return resource_data
     
     except ServiceNotFound as e:
         print(f"Erro ao verificar serviço: {e}")
         return None
 
-
 def create_resource(resource_data: dict) -> None:
     """Creates a new resource with the specified properties"""
-    with open("resources.json", "r+") as f:
+    with open(filename, "r+") as f:
         file_data = json.load(f)
         file_data["resources"].append(resource_data)
         f.seek(0)
@@ -44,7 +45,7 @@ def update_resource(resource_data: dict, destroy: bool = False) -> None:
         delete_resource(resource_data['id'])
     else:
         
-        with open("resources.json", "r+") as f:
+        with open(filename, "r+") as f:
             file_data = json.load(f)
             for i, resource in enumerate(file_data["resources"]):
                 if resource["id"] == resource_data["id"]:
@@ -57,11 +58,10 @@ def update_resource(resource_data: dict, destroy: bool = False) -> None:
 
             print(f"Resource with ID {resource_data['id']} not found.")
 
-
 def delete_resource(resource_id: str) -> None:
     print(f"Deleting resource with ID {resource_id}")
     
-    with open("resources.json", "r+") as f:
+    with open(filename, "r+") as f:
         file_data = json.load(f)
         for i, resource in enumerate(file_data["resources"]):
             if resource["id"] == resource_id:
@@ -88,12 +88,10 @@ def check_json_file(file_path: str) -> Optional[str]:
         print(f"Arquivo não encontrado: {file_path}")
         return None
 
-
 def load_resource_data() -> Optional[dict]:
-    json_str = check_json_file('service.json')
+    json_str = check_json_file('topic.json')
     if json_str is not None:
         return json.loads(json_str)
-
 
 def main(resource_data: dict) -> None:
     for key, value in resource_data.items():
@@ -102,10 +100,10 @@ def main(resource_data: dict) -> None:
 
     required_fields = ['id', 'region', 'cluster', 'name', 'alb', 'dns']
     if not all(field in resource_data for field in required_fields):
-        print(f"Parâmetros {required_fields} não encontrados em service.json")
+        print(f"Parâmetros {required_fields} não encontrados em topic.json")
         return
     elif not all(resource_data[field] for field in required_fields):
-        print("Parâmetro vazio em service.json")
+        print("Parâmetro vazio em topic.json")
         return
     
     
@@ -115,7 +113,6 @@ def main(resource_data: dict) -> None:
         update_resource(resource_data, resource_data.get('destroy', False))
     else:
         create_resource(resource_data)
-
 
 if __name__ == '__main__':
     resource_data = load_resource_data()

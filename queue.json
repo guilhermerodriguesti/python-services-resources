@@ -1,7 +1,7 @@
 {
     "resources": [
         {
-            "id": "111",
+            "id": "hotfix/1",
             "region": "us-west-2",
             "cluster": "my-cluster2",
             "name": "my-service-1",
