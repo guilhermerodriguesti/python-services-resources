@@ -19,7 +19,7 @@ def check_resource(resource_id: str) -> Optional[dict]:
     print(f"Verificando recurso com ID {resource_id}")
     try:
         resource_data = get_resource_data(resource_id)
-        print(f"Recurso encontrado com ID {resource_data['id']}, região {resource_data['region']}, cluster {resource_data['cluster']}, nome {resource_data['name']}, alb {resource_data['alb']}, dns {resource_data['dns']}")
+        print(f"Recurso encontrado com ID {resource_data['id']}")
         return resource_data
     
     except ServiceNotFound as e:
@@ -90,7 +90,7 @@ def check_json_file(file_path: str) -> Optional[str]:
 
 
 def load_resource_data() -> Optional[dict]:
-    json_str = check_json_file('service.json')
+    json_str = check_json_file('source.json')
     if json_str is not None:
         return json.loads(json_str)
 
@@ -100,12 +100,12 @@ def main(resource_data: dict) -> None:
         print(f"{key}: {value}")
 
 
-    required_fields = ['id', 'region', 'cluster', 'name', 'alb', 'dns']
+    required_fields = ['id', 'displayName', 'givenName', 'sn', 'employeeID', 'description']
     if not all(field in resource_data for field in required_fields):
-        print(f"Parâmetros {required_fields} não encontrados em service.json")
+        print(f"Parâmetros {required_fields} não encontrados em source.json")
         return
     elif not all(resource_data[field] for field in required_fields):
-        print("Parâmetro vazio em service.json")
+        print("Parâmetro vazio em source.json")
         return
     
     

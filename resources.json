@@ -1,12 +1,12 @@
 {
     "resources": [
         {
-            "id": "111",
-            "region": "us-west-2",
-            "cluster": "my-cluster2",
-            "name": "my-service-1",
-            "alb": "my-alb",
-            "dns": "my-dns",
+            "id": "123.456.789-00",
+            "displayName": "Guilherme Rodrigues",
+            "givenName": "Guilherme",
+            "sn": "Rodrigues",
+            "employeeID": "123456",
+            "description": "Analista",
             "destroy": true
         }
     ]
