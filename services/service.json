@@ -1,0 +1,11 @@
+{
+    "cluster": "ecs-nodejs-app-dev-cluster",
+    "service": "ecs-nodejs-app-dev-service",
+    "taskDefinition": "ecs-nodejs-app-dev-service",
+    "deploymentConfiguration": {
+        "maximumPercent": 200,
+        "minimumHealthyPercent": 50
+    },
+    "desiredCount": 1
+}
+  

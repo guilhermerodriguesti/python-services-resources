@@ -1,5 +1,8 @@
+import os
 import json
-from typing import Optional
+from typing import Dict, Optional
+from dotenv import dotenv_values
+
 
 class ServiceNotFound(Exception):
     pass
@@ -74,39 +77,28 @@ def delete_resource(resource_id: str) -> None:
 
         print(f"Resource with ID {resource_id} not found.")
 
-def check_json_file(file_path: str) -> Optional[str]:
-    try:
-        with open(file_path, 'r') as f:
-            json_str = f.read()
-            json.loads(json_str)
-            print("JSON é válido")
-            return json_str
-    except json.JSONDecodeError as e:
-        print(f"JSON inválido: {e}")
-        return None
-    except FileNotFoundError:
-        print(f"Arquivo não encontrado: {file_path}")
-        return None
 
+def load_resource_data() -> Dict[str, Optional[str]]:
+    # Carrega as variáveis definidas no arquivo .env em um dicionário
+    env_vars = dotenv_values(".env")
 
-def load_resource_data() -> Optional[dict]:
-    json_str = check_json_file('service.json')
-    if json_str is not None:
-        return json.loads(json_str)
+    # Cria um dicionário vazio para armazenar os dados
+    resource_data = {}
+
+    # Itera sobre as chaves do dicionário env_vars para obter os valores das variáveis de ambiente
+    for var in env_vars:
+        value = os.environ.get(var)
+        if value is not None:
+            resource_data[var] = value
+        else:
+            resource_data[var] = env_vars[var]
+
+    return resource_data
 
 
 def main(resource_data: dict) -> None:
     for key, value in resource_data.items():
         print(f"{key}: {value}")
-
-
-    required_fields = ['id', 'region', 'cluster', 'name', 'alb', 'dns']
-    if not all(field in resource_data for field in required_fields):
-        print(f"Parâmetros {required_fields} não encontrados em service.json")
-        return
-    elif not all(resource_data[field] for field in required_fields):
-        print("Parâmetro vazio em service.json")
-        return
     
     
     resource = check_resource(resource_data['id'])
